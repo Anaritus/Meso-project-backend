@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
+import helmet from 'helmet';
 import { ErrorWithCode } from './errors/errors';
 import userRouter from './user/routes';
 import cardRouter from './card/routes';
@@ -12,6 +13,7 @@ const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(express.json());
+app.use(helmet());
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   req.body.user = {
