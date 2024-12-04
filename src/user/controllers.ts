@@ -33,12 +33,9 @@ export const createUser = (
   next: NextFunction,
 ): Promise<any> => {
   const { name, about, avatar } = req.body;
-  if (!name || !about || !avatar) {
-    return Promise.reject(new InvalidDataError()).catch(next);
-  }
   return User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
-    .catch(next);
+    .then((user) => res.status(201).send(user))
+    .catch(errorWrapper(next));
 };
 
 export const updateUser = (
