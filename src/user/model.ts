@@ -1,5 +1,5 @@
-import { model, Schema } from "mongoose";
-import { urlValidate } from "../util";
+import { model, Schema } from 'mongoose';
+import { urlValidate } from '../util';
 
 interface IUser {
   name: string;
@@ -30,4 +30,4 @@ const userSchema = new Schema<IUser>(
   { versionKey: false },
 );
 
-export default model<IUser>("user", userSchema);
+export default model<IUser>('user', userSchema);

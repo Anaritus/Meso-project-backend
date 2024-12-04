@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import NotFoundError from '../errors/not_found_error';
 import InvalidDataError from '../errors/invalid_data_error';
 import errorWrapper from '../errors/error_wrapper';
 import { checkUserAuth } from '../user/controllers';
@@ -30,8 +31,8 @@ export const postCard = (
   return checkUserAuth(_id)
     .then((user) => Card.create({ name, link, owner: user._id }))
     .then((card) => card.populate('owner'))
-    .then((card) => res.send(card))
-    .catch(next);
+    .then((card) => res.status(201).send(card))
+    .catch(errorWrapper(next));
 };
 
 export const deleteCard = (
@@ -43,7 +44,7 @@ export const deleteCard = (
   return Card.findByIdAndDelete(cardId)
     .then((card) => {
       if (!card) {
-        throw new InvalidDataError('Запрашиваемый пост не найден');
+        throw new NotFoundError('Запрашиваемый пост не найден');
       }
       res.send({ message: 'Пост удален' });
     })
