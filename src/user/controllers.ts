@@ -1,40 +1,56 @@
-import { NextFunction, Request, Response } from 'express';
-import InvalidDataError from '../errors/invalid_data_error';
-import NotFoundError from '../errors/not_found_error';
-import errorWrapper from '../errors/error_wrapper';
-import User from './model';
+import { NextFunction, Request, Response } from "express";
+import bcrypt from "bcryptjs";
+import InvalidDataError from "../errors/invalid_data_error";
+import NotFoundError from "../errors/not_found_error";
+import errorWrapper from "../errors/error_wrapper";
+import User from "./model";
 
 export const getUsers = (
   _: Request,
   res: Response,
   next: NextFunction,
-): Promise<any> => User.find({})
-  .then((users) => res.send({ data: users }))
-  .catch(next);
+): Promise<any> =>
+  User.find({})
+    .then((users) => res.send({ data: users }))
+    .catch(next);
 
-export const checkUserAuth = (_id: string): Promise<any> => User.findById(_id).then((user) => {
-  if (!user) {
-    throw new NotFoundError('Запрашиваемый пользователь не найден');
-  }
-  return Promise.resolve(user);
-});
+export const checkUserAuth = (_id: string): Promise<any> =>
+  User.findById(_id).then((user) => {
+    if (!user) {
+      throw new NotFoundError("Запрашиваемый пользователь не найден");
+    }
+    return Promise.resolve(user);
+  });
+
+export const login = (email: string, password: string) => Promise.resolve(true);
 
 export const getUserById = (
   req: Request,
   res: Response,
   next: NextFunction,
-): Promise<any> => checkUserAuth(req.params.userId)
-  .then((user) => res.send(user))
-  .catch(next);
+): Promise<any> =>
+  checkUserAuth(req.params.userId)
+    .then((user) => res.send(user))
+    .catch(next);
 
 export const createUser = (
   req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<any> => {
-  const { name, about, avatar } = req.body;
-  return User.create({ name, about, avatar })
-    .then((user) => res.status(201).send(user))
+  const { name, about, avatar, email, password } = req.body;
+  return bcrypt
+    .hash(password, 10)
+    .then((hash) =>
+      User.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash,
+      }),
+    )
+    .then((user) => res.send(user))
     .catch(errorWrapper(next));
 };
 
@@ -52,14 +68,16 @@ export const updateUser = (
     return Promise.reject(new InvalidDataError()).catch(next);
   }
   return checkUserAuth(_id)
-    .then((user) => User.findByIdAndUpdate(
-      user._id,
-      { name, about },
-      {
-        new: true,
-        runValidators: true,
-      },
-    ))
+    .then((user) =>
+      User.findByIdAndUpdate(
+        user._id,
+        { name, about },
+        {
+          new: true,
+          runValidators: true,
+        },
+      ),
+    )
     .then((updatedUser) => res.send(updatedUser))
     .catch(errorWrapper(next));
 };
@@ -77,14 +95,16 @@ export const updateUserAvatar = (
     return Promise.reject(new InvalidDataError()).catch(next);
   }
   return checkUserAuth(_id)
-    .then((user) => User.findByIdAndUpdate(
-      user._id,
-      { avatar },
-      {
-        new: true,
-        runValidators: true,
-      },
-    ))
+    .then((user) =>
+      User.findByIdAndUpdate(
+        user._id,
+        { avatar },
+        {
+          new: true,
+          runValidators: true,
+        },
+      ),
+    )
     .then((updatedUser) => res.send(updatedUser))
     .catch(errorWrapper(next));
 };

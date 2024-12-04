@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { urlValidate } from '../util';
+import isURL from 'validator/lib/isURL';
 
 interface ICard {
   name: string;
