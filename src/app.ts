@@ -9,7 +9,7 @@ import { ErrorWithCode } from './errors/errors';
 import userRouter from './user/routes';
 import cardRouter from './card/routes';
 import NotFoundError from './errors/not_found_error';
-import { auth } from './auth/middleware';
+import auth from './auth/middleware';
 
 const { PORT = 3000 } = process.env;
 
@@ -44,4 +44,6 @@ app.use(
   },
 );
 
-app.listen(PORT, () => {});
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
+});

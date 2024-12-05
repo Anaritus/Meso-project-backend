@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import BadAuthError from '../errors/bad_auth_error';
+import BadAuthError from './errors';
 
-export const auth = (req: Request, res: Response, next: NextFunction) => {
+const { JWT_SECRET = 'some-secret-key' } = process.env;
+
+export default (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
 
   if (!(authorization && authorization.startsWith('Bearer '))) {
@@ -14,7 +16,7 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
 
   let payload;
   try {
-    payload = jwt.verify(token, 'some-secret-key');
+    payload = jwt.verify(token, JWT_SECRET);
   } catch {
     next(new BadAuthError('Пользователь не авторизован'));
     return;

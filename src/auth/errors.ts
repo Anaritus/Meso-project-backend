@@ -1,4 +1,4 @@
-import { ErrorWithCode } from './errors';
+import { ErrorWithCode } from '../errors/errors';
 
 export default class BadAuthError extends Error implements ErrorWithCode {
   statusCode = 401;

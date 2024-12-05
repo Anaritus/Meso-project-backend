@@ -2,7 +2,7 @@ import mongoose, { model, Schema } from 'mongoose';
 import isURL from 'validator/lib/isURL';
 import isEmail from 'validator/lib/isEmail';
 import bcrypt from 'bcryptjs';
-import BadAuthError from '../errors/bad_auth_error';
+import BadAuthError from '../auth/errors';
 
 interface IUser {
   name: string;
@@ -12,12 +12,14 @@ interface IUser {
   password: string;
 }
 
+/* eslint-disable no-unused-vars */
 interface UserModel extends mongoose.Model<IUser> {
   checkAuth: (
     email: string,
     password: string,
   ) => Promise<mongoose.Document<unknown, any, IUser>>;
 }
+/* eslint-enable no-unused-vars */
 
 const userSchema = new Schema<IUser, UserModel>(
   {

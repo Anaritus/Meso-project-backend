@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import BadAuthError from '../errors/bad_auth_error';
 import NotFoundError from '../errors/not_found_error';
 import InvalidDataError from '../errors/invalid_data_error';
 import errorWrapper from '../errors/error_wrapper';
 import { checkUserAuth } from '../user/controllers';
 import Card from './model';
+import WrongCardError from './errors';
 
 export const getCards = (
   _: Request,
@@ -48,7 +48,7 @@ export const deleteCard = (
         throw new NotFoundError('Запрашиваемый пост не найден');
       }
       if (card.owner !== req.body.user._id) {
-        throw new BadAuthError('У вас нет прав на эту операцию');
+        throw new WrongCardError();
       }
       return Card.findByIdAndDelete(card._id);
     })

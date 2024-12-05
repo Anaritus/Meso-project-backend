@@ -6,6 +6,8 @@ import NotFoundError from '../errors/not_found_error';
 import errorWrapper from '../errors/error_wrapper';
 import User from './model';
 
+const { JWT_SECRET = 'some-secret-key' } = process.env;
+
 export const getUsers = (
   _: Request,
   res: Response,
@@ -29,7 +31,7 @@ export const login = (
   const { email, password } = req.body;
   return User.checkAuth(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: '7d',
       });
 
