@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import BadAuthError from '../errors/bad_auth_error';
 import NotFoundError from '../errors/not_found_error';
 import InvalidDataError from '../errors/invalid_data_error';
 import errorWrapper from '../errors/error_wrapper';
@@ -41,13 +42,17 @@ export const deleteCard = (
   next: NextFunction,
 ): Promise<any> => {
   const { cardId } = req.params;
-  return Card.findByIdAndDelete(cardId)
+  return Card.findById(cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Запрашиваемый пост не найден');
       }
-      res.send({ message: 'Пост удален' });
+      if (card.owner !== req.body.user._id) {
+        throw new BadAuthError('У вас нет прав на эту операцию');
+      }
+      return Card.findByIdAndDelete(card._id);
     })
+    .then(() => res.send({ message: 'Пост удален' }))
     .catch(next);
 };
 
@@ -64,7 +69,6 @@ export const likeCard = (
       { $addToSet: { likes: user._id } },
       { new: true },
     ))
-    .then((card) => Promise.resolve(card))
     .then((card) => card?.populate('owner'))
     .then((card) => card?.populate('likes'))
     .then((card) => res.send(card))
@@ -84,6 +88,8 @@ export const dislikeCard = (
       { $pull: { likes: user._id } },
       { new: true },
     ))
-    .then((card) => res.send({ data: card }))
+    .then((card) => card?.populate('owner'))
+    .then((card) => card?.populate('likes'))
+    .then((card) => res.send(card))
     .catch(errorWrapper(next));
 };

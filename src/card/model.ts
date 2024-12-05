@@ -1,5 +1,5 @@
-import { model, Schema } from 'mongoose';
-import isURL from 'validator/lib/isURL';
+import { model, Schema } from "mongoose";
+import isURL from "validator/lib/isURL";
 
 interface ICard {
   name: string;
@@ -19,19 +19,19 @@ const cardSchema = new Schema<ICard>(
     },
     link: {
       type: String,
-      validate: urlValidate,
+      validate: isURL,
       required: true,
     },
     owner: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: 'user',
+      ref: "user",
     },
     likes: {
       type: [
         {
           type: Schema.Types.ObjectId,
-          ref: 'user',
+          ref: "user",
         },
       ],
       default: [],
@@ -44,4 +44,4 @@ const cardSchema = new Schema<ICard>(
   { versionKey: false },
 );
 
-export default model<ICard>('card', cardSchema);
+export default model<ICard>("card", cardSchema);

@@ -3,5 +3,5 @@ export interface ErrorWithCode extends Error {
 }
 
 export interface MongooseError extends Error {
-  kind?: string;
+  code?: number;
 }
