@@ -6,12 +6,13 @@ import {
   likeCard,
   dislikeCard,
 } from './controllers';
+import { cardBody, cardMiddleware } from './middleware';
 
 const router = Router();
 router.get('/', getCards);
-router.delete('/:cardId', deleteCard);
-router.put('/:cardId/likes', likeCard);
-router.delete('/:cardId/likes', dislikeCard);
-router.post('/', postCard);
+router.delete('/:cardId', cardMiddleware, deleteCard);
+router.put('/:cardId/likes', cardMiddleware, likeCard);
+router.delete('/:cardId/likes', cardMiddleware, dislikeCard);
+router.post('/', cardBody, postCard);
 
 export default router;
