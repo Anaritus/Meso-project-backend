@@ -1,4 +1,5 @@
 import { celebrate, Joi } from 'celebrate';
+import urlRegExp from '../util';
 
 export const updateUserMiddleware = celebrate({
   body: Joi.object()
@@ -12,7 +13,7 @@ export const updateUserMiddleware = celebrate({
 export const updateAvatarMiddleware = celebrate({
   body: Joi.object()
     .keys({
-      avatar: Joi.string().required(),
+      avatar: Joi.string().required().pattern(urlRegExp),
     })
     .unknown(true),
 });

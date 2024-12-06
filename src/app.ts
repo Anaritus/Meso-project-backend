@@ -28,7 +28,7 @@ app.use(auth);
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
 
-app.use('*', (req: Request, res: Response, next: NextFunction) => {
+app.use('*', () => {
   throw new NotFoundError('Данной страницы не существует');
 });
 

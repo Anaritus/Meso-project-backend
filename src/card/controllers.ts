@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import NotFoundError from '../errors/not_found_error';
-import InvalidDataError from '../errors/invalid_data_error';
 import errorWrapper from '../errors/error_wrapper';
 import { checkUserAuth } from '../user/controllers';
 import Card from './model';
@@ -26,9 +25,6 @@ export const postCard = (
     link,
     user: { _id },
   } = req.body;
-  if (!name || !link) {
-    return Promise.reject(new InvalidDataError()).catch(next);
-  }
   return checkUserAuth(_id)
     .then((user) => Card.create({ name, link, owner: user._id }))
     .then((card) => card.populate('owner'))

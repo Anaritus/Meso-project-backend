@@ -19,7 +19,6 @@ const cardSchema = new Schema<ICard>(
     },
     link: {
       type: String,
-      validate: isURL,
       required: true,
     },
     owner: {

@@ -65,7 +65,7 @@ export const createUser = (
       email,
       password: hash,
     }))
-    .then((user) => res.send(user.toJSON({ useProjection: true })))
+    .then((user) => res.status(201).send(user.toJSON({ useProjection: true })))
     .catch(errorWrapper(next));
 };
 
@@ -79,9 +79,6 @@ export const updateUser = (
     about,
     user: { _id },
   } = req.body;
-  if (!name || !about) {
-    return Promise.reject(new InvalidDataError()).catch(next);
-  }
   return checkUserAuth(_id)
     .then((user) => User.findByIdAndUpdate(
       user._id,
@@ -104,9 +101,6 @@ export const updateUserAvatar = (
     avatar,
     user: { _id },
   } = req.body;
-  if (!avatar) {
-    return Promise.reject(new InvalidDataError()).catch(next);
-  }
   return checkUserAuth(_id)
     .then((user) => User.findByIdAndUpdate(
       user._id,
