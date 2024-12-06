@@ -37,11 +37,6 @@ const userSchema = new Schema<IUser, UserModel>(
     },
     avatar: {
       type: String,
-      validate: (avatar: string) => isURL(avatar.replace('www.', ''), {
-        protocols: ['http', 'https'],
-        require_protocol: true,
-        require_host: true,
-      }),
       default:
         'https://pictures.s3.yandex.net/resources/Untitled_-_2024-05-06T195257.404_1715003590.png',
     },
